@@ -40,6 +40,7 @@
   @keyframes tileIn    { from { opacity: 0; transform: scale(.95); } to { opacity: 1; transform: scale(1); } }
   @keyframes tileOut   { from { opacity: 1; transform: scale(1); }   to { opacity: 0; transform: scale(.95); } }
   .chips-row { scrollbar-width: none; -ms-overflow-style: none; }
+  .main-scroll { scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
   @keyframes twinkle {
     0%, 100% { opacity: 1; transform: scale(1) rotate(0deg); }
     50%       { opacity: 0.2; transform: scale(0.5) rotate(20deg); }
@@ -852,9 +853,9 @@ function App() {
               <BoardHeader palette={palette}/>
               {/* Sync + copy link row — right below title */}
               <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-                <button onClick={copyLink} style={{ appearance:'none', border:`0.5px solid ${palette.divider}`, borderRadius:999, background:'#ffffff', color: copied ? palette.accent : palette.muted, fontFamily:MONO, fontSize:12, padding:'5px 14px', cursor:'pointer', display:'flex', alignItems:'center', gap:6, transition:'color .2s' }}>
+                {items.length > 0 && <button onClick={copyLink} style={{ appearance:'none', border:`0.5px solid ${palette.divider}`, borderRadius:999, background:'#ffffff', color: copied ? palette.accent : palette.muted, fontFamily:MONO, fontSize:12, padding:'5px 14px', cursor:'pointer', display:'flex', alignItems:'center', gap:6, transition:'color .2s' }}>
                   {copied ? '✓ copied' : <><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight:2}}><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>{'copy list'}</>}
-                </button>
+                </button>}
                 <button onClick={copyAppLink} style={{ appearance:'none', border:`0.5px solid ${palette.divider}`, borderRadius:999, background:'#ffffff', color: copiedApp ? palette.accent : palette.muted, fontFamily:MONO, fontSize:12, padding:'5px 14px', cursor:'pointer', display:'flex', alignItems:'center', gap:6, transition:'color .2s' }}>
                   {copiedApp ? '✓ copied' : '⤴ share app'}
                 </button>
@@ -919,15 +920,15 @@ function App() {
 
   return (
     <div style={{ position:'relative', width:'100%', maxWidth:430, minHeight:'100vh', background:'transparent', color:palette.ink, fontFamily:MONO }}>
-      <div style={{ height:'100%', overflowY:'auto', display:'flex', flexDirection:'column', gap:32, paddingBottom:52 }}>
+      <div className="main-scroll" style={{ minHeight:'100%', overflowY:'auto', display:'flex', flexDirection:'column', gap:32, paddingBottom:100 }}>
         <div style={{ height:20 }}/>
         <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:8 }}>
           <BoardHeader palette={palette}/>
           {/* Sync + copy link row */}
           <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-            <button onClick={copyLink} style={{ appearance:'none', border:`0.5px solid ${palette.divider}`, borderRadius:999, background:'#ffffff', color: copied ? palette.accent : palette.muted, fontFamily:MONO, fontSize:12, padding:'5px 14px', cursor:'pointer', display:'flex', alignItems:'center', gap:6, transition:'color .2s' }}>
+            {items.length > 0 && <button onClick={copyLink} style={{ appearance:'none', border:`0.5px solid ${palette.divider}`, borderRadius:999, background:'#ffffff', color: copied ? palette.accent : palette.muted, fontFamily:MONO, fontSize:12, padding:'5px 14px', cursor:'pointer', display:'flex', alignItems:'center', gap:6, transition:'color .2s' }}>
               {copied ? '✓ copied' : <><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight:2}}><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>{'copy list'}</>}
-            </button>
+            </button>}
             <button onClick={copyAppLink} style={{ appearance:'none', border:`0.5px solid ${palette.divider}`, borderRadius:999, background:'#ffffff', color: copiedApp ? palette.accent : palette.muted, fontFamily:MONO, fontSize:12, padding:'5px 14px', cursor:'pointer', display:'flex', alignItems:'center', gap:6, transition:'color .2s' }}>
               {copiedApp ? '✓ copied' : '⤴ share app'}
             </button>
@@ -937,7 +938,7 @@ function App() {
           </div>
         </div>
         <HeroTotal total={total} palette={palette} density={density}/>
-        <div style={{ display:'flex', flexDirection:'column', gap:16 }}>
+        <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
           <PasteBar palette={palette} density={density} value={pasteValue} setValue={setPasteValue} onSubmit={handleAdd}/>
           {usedCats.length >= 2 && (
             <div className="chips-row" style={{ display:'flex', gap:8, padding:'0 16px', overflowX:'auto' }}>
