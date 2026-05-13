@@ -701,11 +701,9 @@ function getOrCreateListKey() {
     localStorage.setItem('wishlist_key', fromUrl);
     return fromUrl;
   }
-  let key = localStorage.getItem('wishlist_key');
-  if (!key) {
-    key = 'wl_' + Math.random().toString(36).slice(2, 9) + Math.random().toString(36).slice(2, 9);
-    localStorage.setItem('wishlist_key', key);
-  }
+  // No ?list= in URL — always start fresh so share app link shows empty state
+  const key = 'wl_' + Math.random().toString(36).slice(2, 9) + Math.random().toString(36).slice(2, 9);
+  localStorage.setItem('wishlist_key', key);
   const url = new URL(window.location);
   url.searchParams.set('list', key);
   window.history.replaceState({}, '', url);
