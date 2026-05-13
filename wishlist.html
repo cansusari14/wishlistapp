@@ -277,14 +277,14 @@ function PasteBar({ palette, density, onSubmit, value, setValue }) {
 function HeroTotal({ total, palette, density }) {
   const equiv = equivalenceFor(total);
   return (
-    <div style={{ padding:'0 16px', display:'flex', flexDirection:'column', gap:8, alignItems:'center', textAlign:'center', lineHeight:'auto' }}>
-      <div style={{ fontFamily:MONO, fontSize:14, color:palette.ink, lineHeight:'auto' }}>
-        Total sum of your items
+    <div style={{ padding:'0 16px', display:'flex', flexDirection:'column', gap:0, alignItems:'center', textAlign:'center', lineHeight:'auto' }}>
+      <div style={{ fontFamily:MONO, fontSize:12, color:palette.muted, lineHeight:'auto' }}>
+        Total sum
       </div>
-      <span style={{ fontFamily:SERIF, fontSize:48, lineHeight:'auto', color:palette.accent, letterSpacing:0, fontWeight:600 }}>
-        €{total.toLocaleString('de-DE')}
+      <span style={{ fontFamily:SERIF, fontSize:48, lineHeight:1, color:palette.accent, letterSpacing:0, fontWeight:600, display:'flex', alignItems:'baseline', gap:2 }}>
+        <span style={{ fontSize:36 }}>€</span><span style={{ fontSize:48 }}>{total.toLocaleString('de-DE')}</span>
       </span>
-      <div style={{ fontFamily:MONO, fontSize:14, fontWeight:400, color:palette.ink, letterSpacing:0.1, textAlign:'center', lineHeight:'auto' }}>
+      <div style={{ fontFamily:MONO, fontSize:14, fontWeight:400, color:palette.ink, letterSpacing:0.1, textAlign:'center', lineHeight:'auto', marginTop:16 }}>
         that's {equiv.replace(/^that's\s*/,'')}
       </div>
     </div>
@@ -313,12 +313,12 @@ function EmptyState({ palette, category, isDesk }) {
     : (CATEGORIES.find(c => c.id === category)?.label.toLowerCase() || category);
   return (
     <div style={{ margin: isDesk ? '48px 16px' : '0 16px', padding: isDesk ? '0' : '24px 16px', display:'flex', flexDirection:'column', alignItems:'center', gap:8, textAlign:'center' }}>
-      <img src="emptystate.gif" style={{ width:240, height:240, objectFit:'cover', borderRadius:12 }}/>
+      <img src="emptystate.gif" style={{ width:198, height:198, objectFit:'cover', borderRadius:12 }}/>
       <div style={{ fontFamily:MONO, fontSize:18, color:palette.ink, letterSpacing:0.1, marginTop:16 }}>
         Nothing in {label} — yet
       </div>
       <div style={{ fontFamily:MONO, fontSize:14, color:palette.muted, lineHeight:1.5, maxWidth:240 }}>
-        Paste a shopping link above. Add a price. Sit with it for a day.
+        Don't add to cart. Sit with it for a day.
       </div>
     </div>
   );
