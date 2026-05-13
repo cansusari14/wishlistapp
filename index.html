@@ -21,11 +21,14 @@
   body::before {
     content: '';
     position: fixed;
-    inset: 0;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
     background-image: url('leopard.avif');
     background-repeat: repeat;
     background-size: 320px;
-    opacity: 0.08;
+    opacity: 0.06;
+    filter: grayscale(1);
     pointer-events: none;
     z-index: 0;
   }
@@ -37,6 +40,11 @@
   @keyframes tileIn    { from { opacity: 0; transform: scale(.95); } to { opacity: 1; transform: scale(1); } }
   @keyframes tileOut   { from { opacity: 1; transform: scale(1); }   to { opacity: 0; transform: scale(.95); } }
   .chips-row { scrollbar-width: none; -ms-overflow-style: none; }
+  @keyframes twinkle {
+    0%, 100% { opacity: 1; transform: scale(1) rotate(0deg); }
+    50%       { opacity: 0.2; transform: scale(0.5) rotate(20deg); }
+  }
+  .sparkle { display:inline-block; position:absolute; color:#ffffff; text-shadow: 0 0 6px #da5491; animation: twinkle 1.8s ease-in-out infinite; line-height:1; }
   .chips-row::-webkit-scrollbar { display: none; }
 </style>
 </head>
@@ -52,7 +60,7 @@ const { useState, useEffect, useRef } = React;
 
 // ─── Palettes ────────────────────────────────────────────────────────────────
 const PALETTES = {
-  light: { bg:'#ffffff', surface:'#ffffff', ink:'#1a1a1a', muted:'rgba(26,26,26,0.55)',   accent:'#1a1a1a', soft:'#e5e5e4', divider:'rgba(26,26,26,0.10)',   tileMeta:'rgba(60,50,40,0.52)' },
+  light: { bg:'#ffffff', surface:'#FAF8F5', ink:'#272838', muted:'#9B9AAF', accent:'#DA5491', soft:'#e8e7ef', divider:'rgba(39,40,56,0.10)', tileMeta:'rgba(39,40,56,0.52)' },
   paper: { bg:'#ebeae7', surface:'#f7f6f4', ink:'#222222', muted:'rgba(34,34,34,0.55)',   accent:'#444444', soft:'#dcdbd8', divider:'rgba(34,34,34,0.10)',   tileMeta:'rgba(60,50,40,0.45)' },
   fog:   { bg:'#dcdcdb', surface:'#eeeeed', ink:'#2a2a2a', muted:'rgba(42,42,42,0.55)',   accent:'#2a2a2a', soft:'#cacac9', divider:'rgba(42,42,42,0.12)',   tileMeta:'rgba(42,42,42,0.45)' },
   ink:   { bg:'#1a1a1a', surface:'#252525', ink:'#f0f0ee', muted:'rgba(240,240,238,0.55)', accent:'#f0f0ee', soft:'#2e2e2e', divider:'rgba(240,240,238,0.12)', tileMeta:'rgba(240,238,228,0.50)' },
@@ -247,7 +255,7 @@ function CategoryChips({ active, onPick, palette, density }) {
 function PasteBar({ palette, density, onSubmit, value, setValue }) {
   return (
     <div style={{ padding:'0 32px' }}>
-      <div style={{ display:'flex', alignItems:'center', gap:8, background:palette.surface, borderRadius:200, padding: density === 'compact' ? '8px 8px 8px 14px' : '10px 10px 10px 14px', border:`0.5px solid ${palette.divider}`, boxShadow:'0 1px 2px rgba(60,40,20,0.04)' }}>
+      <div style={{ display:'flex', alignItems:'center', gap:8, background:'#ffffff', borderRadius:200, padding: density === 'compact' ? '8px 8px 8px 14px' : '10px 10px 10px 14px', border:`0.5px solid ${palette.divider}`, boxShadow:'0 1px 2px rgba(60,40,20,0.04)' }}>
         <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke={palette.muted} strokeWidth="1.4" strokeLinecap="round">
           <path d="M6.5 9.5l-2 2a2.5 2.5 0 01-3.5-3.5l3-3a2.5 2.5 0 013.5 0"/>
           <path d="M9.5 6.5l2-2a2.5 2.5 0 013.5 3.5l-3 3a2.5 2.5 0 01-3.5 0"/>
@@ -273,7 +281,7 @@ function HeroTotal({ total, palette, density }) {
       <div style={{ fontFamily:MONO, fontSize:14, color:palette.muted, lineHeight:'auto' }}>
         Total sum of your items
       </div>
-      <span style={{ fontFamily:SERIF, fontSize:48, lineHeight:'auto', color:palette.ink, letterSpacing:0, fontWeight:600 }}>
+      <span style={{ fontFamily:SERIF, fontSize:48, lineHeight:'auto', color:palette.accent, letterSpacing:0, fontWeight:600 }}>
         €{total.toLocaleString('de-DE')}
       </span>
       <div style={{ fontFamily:MONO, fontSize:14, fontWeight:400, color:palette.muted, letterSpacing:0.1, textAlign:'center', lineHeight:'auto' }}>
@@ -287,7 +295,14 @@ function HeroTotal({ total, palette, density }) {
 function BoardHeader({ palette }) {
   return (
     <div style={{ display:'flex', alignItems:'center', justifyContent:'center', padding:'0 16px' }}>
-      <div style={{ fontFamily:SERIF, fontSize:32, color:palette.ink, letterSpacing:-0.2, textTransform:'uppercase' }}>My Wishlist</div>
+      <div style={{ position:'relative', display:'inline-block' }}>
+        <span style={{ fontFamily:SERIF, fontSize:32, letterSpacing:-0.2, textTransform:'uppercase', color:palette.accent }}>My Wishlist</span>
+        <span className="sparkle" style={{ fontSize:13, top:-8,  left:-4,  animationDelay:'0s'    }}>✦</span>
+        <span className="sparkle" style={{ fontSize:9,  top:-4,  left:18,  animationDelay:'0.6s'  }}>✦</span>
+        <span className="sparkle" style={{ fontSize:11, top:-10, right:24, animationDelay:'1.1s'  }}>✦</span>
+        <span className="sparkle" style={{ fontSize:8,  top:2,   right:-6, animationDelay:'0.3s'  }}>✦</span>
+        <span className="sparkle" style={{ fontSize:10, bottom:-4, left:40, animationDelay:'1.5s' }}>✦</span>
+      </div>
     </div>
   );
 }
@@ -297,7 +312,7 @@ function EmptyState({ palette, category, isDesk }) {
   const label = category === 'all' ? 'your wishlist'
     : (CATEGORIES.find(c => c.id === category)?.label.toLowerCase() || category);
   return (
-    <div style={{ margin: isDesk ? '48px 16px' : '24px 16px', padding: isDesk ? '0' : '40px 24px', borderRadius: isDesk ? 0 : 16, background: isDesk ? 'transparent' : palette.surface, border: isDesk ? 'none' : `0.5px dashed ${palette.divider}`, display:'flex', flexDirection:'column', alignItems:'center', gap:8, textAlign:'center' }}>
+    <div style={{ margin: isDesk ? '48px 16px' : '0 16px', padding: isDesk ? '0' : '24px 16px', display:'flex', flexDirection:'column', alignItems:'center', gap:8, textAlign:'center' }}>
       <img src="emptystate.gif" style={{ width:240, height:240, objectFit:'cover', borderRadius:12 }}/>
       <div style={{ fontFamily:MONO, fontSize:18, color:palette.ink, letterSpacing:0.1, marginTop:16 }}>
         Nothing in {label} — yet
@@ -396,7 +411,7 @@ function AddSheet({ url, palette, density, onCancel, onSave, isDesk }) {
          onClick={handleClose}>
       <div onClick={e => e.stopPropagation()}
            onAnimationEnd={() => { if (isClosing) onCancel(); }}
-           style={{ width:'100%', maxWidth: isDesk ? 480 : '100%', background:palette.bg, color:palette.ink, borderRadius: isDesk ? 20 : '28px 28px 0 0', padding: isDesk ? '24px 28px 32px' : '12px 20px 48px', boxShadow: isDesk ? '0 24px 60px rgba(0,0,0,0.22)' : '0 -10px 40px rgba(0,0,0,0.18)', animation: isClosing ? (isDesk ? 'tileOut .2s ease forwards' : 'slidedown .3s cubic-bezier(.2,.8,.2,1) forwards') : (isDesk ? 'tileIn .2s ease' : 'slideup .3s cubic-bezier(.2,.8,.2,1)'), maxHeight:'90%', overflowY:'auto', overflowX:'hidden' }}>
+           style={{ width:'100%', maxWidth: isDesk ? 480 : '100%', background:palette.surface, color:palette.ink, borderRadius: isDesk ? 20 : '28px 28px 0 0', padding: isDesk ? '24px 28px 32px' : '12px 20px 48px', boxShadow: isDesk ? '0 24px 60px rgba(0,0,0,0.22)' : '0 -10px 40px rgba(0,0,0,0.18)', animation: isClosing ? (isDesk ? 'tileOut .2s ease forwards' : 'slidedown .3s cubic-bezier(.2,.8,.2,1) forwards') : (isDesk ? 'tileIn .2s ease' : 'slideup .3s cubic-bezier(.2,.8,.2,1)'), maxHeight:'90%', overflowY:'auto', overflowX:'hidden' }}>
 
         <div style={{ display:'flex', alignItems:'center', justifyContent: isDesk ? 'space-between' : 'center', position:'relative', padding: isDesk ? '0 0 20px' : '16px 0' }}>
           {!isDesk && <div style={{ width:36, height:4, borderRadius:999, background:palette.divider }}/>}
@@ -414,7 +429,7 @@ function AddSheet({ url, palette, density, onCancel, onSave, isDesk }) {
         </div>}
 
         {/* Image + editable name */}
-        <div style={{ display:'flex', gap:16, marginBottom:24, padding:12, borderRadius:14, background:palette.surface, border:`0.5px solid ${palette.divider}` }}>
+        <div style={{ display:'flex', gap:16, marginBottom:24, padding:12, borderRadius:14, background:'#ffffff', border:`0.5px solid ${palette.divider}` }}>
           <div style={{ width:92, height:92, borderRadius:10, overflow:'hidden', flexShrink:0, background:palette.soft, position:'relative' }}>
             {imageStatus === 'fetching'
               ? <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:MONO, fontSize:12, color:palette.muted }}>fetching…</div>
@@ -438,11 +453,11 @@ function AddSheet({ url, palette, density, onCancel, onSave, isDesk }) {
         {/* Price */}
         <div style={{ marginBottom:24 }}>
           <Label palette={palette}>Price (must have)</Label>
-          <div style={{ display:'flex', alignItems:'baseline', gap:8, background:palette.surface, borderRadius:12, padding:'10px 14px', border:`0.5px solid ${palette.divider}` }}>
-            <span style={{ fontFamily:SERIF, fontSize:28, color:palette.muted, fontStyle:'italic' }}>€</span>
+          <div style={{ display:'flex', alignItems:'baseline', gap:8, background:'#ffffff', borderRadius:12, padding:'10px 14px', border:`0.5px solid ${palette.divider}` }}>
+            <span style={{ fontFamily:SERIF, fontSize:28, color:palette.accent, fontStyle:'italic' }}>€</span>
             <input type="number" inputMode="decimal" value={price} onChange={e => setPrice(e.target.value)}
               placeholder="0" autoFocus
-              style={{ flex:1, border:0, outline:'none', background:'transparent', fontFamily:SERIF, fontSize:28, color:palette.ink, letterSpacing:-0.5, padding:0 }}/>
+              style={{ flex:1, border:0, outline:'none', background:'transparent', fontFamily:SERIF, fontSize:28, color:palette.accent, letterSpacing:-0.5, padding:0 }}/>
           </div>
         </div>
 
@@ -454,7 +469,7 @@ function AddSheet({ url, palette, density, onCancel, onSave, isDesk }) {
               const sel = category === c.id;
               return (
                 <button key={c.id} onClick={() => setCategory(c.id)}
-                  style={{ appearance:'none', cursor:'pointer', display:'flex', alignItems:'center', gap:6, padding:'8px 14px', borderRadius:200, border:`0.5px solid ${sel ? palette.ink : palette.divider}`, background: sel ? palette.ink : palette.surface, color: sel ? palette.bg : palette.ink, fontFamily:MONO, fontSize:14, fontWeight:500, letterSpacing:0.1, transition:'all .15s', whiteSpace:'nowrap' }}>
+                  style={{ appearance:'none', cursor:'pointer', display:'flex', alignItems:'center', gap:6, padding:'8px 14px', borderRadius:200, border:`0.5px solid ${sel ? palette.ink : palette.divider}`, background: sel ? palette.ink : '#ffffff', color: sel ? palette.bg : palette.ink, fontFamily:MONO, fontSize:14, fontWeight:500, letterSpacing:0.1, transition:'all .15s', whiteSpace:'nowrap' }}>
                   <CatIcon name={c.icon} size={13}/>{c.label}
                 </button>
               );
@@ -522,7 +537,7 @@ function ItemSheet({ item, palette, onClose, onDelete, onSave, isDesk }) {
          onClick={handleClose}>
       <div onClick={e => e.stopPropagation()}
            onAnimationEnd={() => { if (isClosing) onClose(); }}
-        style={{ width:'100%', maxWidth: isDesk ? 480 : '100%', background:palette.bg, color:palette.ink, borderRadius: isDesk ? 20 : '28px 28px 0 0', padding: isDesk ? '24px 28px 32px' : '12px 20px 48px', boxShadow: isDesk ? '0 24px 60px rgba(0,0,0,0.22)' : '0 -10px 40px rgba(0,0,0,0.18)', animation: isClosing ? (isDesk ? 'tileOut .2s ease forwards' : 'slidedown .3s cubic-bezier(.2,.8,.2,1) forwards') : (isDesk ? 'tileIn .2s ease' : 'slideup .28s cubic-bezier(.2,.8,.2,1)'), maxHeight:'90%', overflowY:'auto', overflowX:'hidden' }}>
+        style={{ width:'100%', maxWidth: isDesk ? 480 : '100%', background:palette.surface, color:palette.ink, borderRadius: isDesk ? 20 : '28px 28px 0 0', padding: isDesk ? '24px 28px 32px' : '12px 20px 48px', boxShadow: isDesk ? '0 24px 60px rgba(0,0,0,0.22)' : '0 -10px 40px rgba(0,0,0,0.18)', animation: isClosing ? (isDesk ? 'tileOut .2s ease forwards' : 'slidedown .3s cubic-bezier(.2,.8,.2,1) forwards') : (isDesk ? 'tileIn .2s ease' : 'slideup .28s cubic-bezier(.2,.8,.2,1)'), maxHeight:'90%', overflowY:'auto', overflowX:'hidden' }}>
 
         <div style={{ display:'flex', alignItems:'center', justifyContent: isDesk ? 'flex-end' : 'center', position:'relative', padding: isDesk ? '0 0 20px' : '16px 0' }}>
           {!isDesk && <div style={{ width:36, height:4, borderRadius:999, background:palette.divider }}/>}
@@ -536,7 +551,7 @@ function ItemSheet({ item, palette, onClose, onDelete, onSave, isDesk }) {
 
 
         {/* Image + editable name */}
-        <div style={{ display:'flex', gap:16, marginBottom:24, padding:12, borderRadius:14, background:palette.surface, border:`0.5px solid ${palette.divider}` }}>
+        <div style={{ display:'flex', gap:16, marginBottom:24, padding:12, borderRadius:14, background:'#ffffff', border:`0.5px solid ${palette.divider}` }}>
           <div onClick={openLink}
             style={{ width:92, height:92, borderRadius:10, overflow:'hidden', flexShrink:0, background:palette.soft, position:'relative', cursor: item.url ? 'pointer' : 'default' }}>
             {displayImg
@@ -566,11 +581,11 @@ function ItemSheet({ item, palette, onClose, onDelete, onSave, isDesk }) {
         {/* Price */}
         <div style={{ marginBottom:24 }}>
           <Label palette={palette}>Price (must have)</Label>
-          <div style={{ display:'flex', alignItems:'baseline', gap:8, background:palette.surface, borderRadius:12, padding:'10px 14px', border:`0.5px solid ${palette.divider}` }}>
-            <span style={{ fontFamily:SERIF, fontSize:28, color:palette.muted, fontStyle:'italic' }}>€</span>
+          <div style={{ display:'flex', alignItems:'baseline', gap:8, background:'#ffffff', borderRadius:12, padding:'10px 14px', border:`0.5px solid ${palette.divider}` }}>
+            <span style={{ fontFamily:SERIF, fontSize:28, color:palette.accent, fontStyle:'italic' }}>€</span>
             <input type="number" inputMode="decimal" value={price} onChange={e => setPrice(e.target.value)}
               placeholder="0"
-              style={{ flex:1, border:0, outline:'none', background:'transparent', fontFamily:SERIF, fontSize:28, color:palette.ink, letterSpacing:-0.5, padding:0 }}/>
+              style={{ flex:1, border:0, outline:'none', background:'transparent', fontFamily:SERIF, fontSize:28, color:palette.accent, letterSpacing:-0.5, padding:0 }}/>
           </div>
         </div>
 
@@ -582,7 +597,7 @@ function ItemSheet({ item, palette, onClose, onDelete, onSave, isDesk }) {
               const sel = category === c.id;
               return (
                 <button key={c.id} onClick={() => setCategory(c.id)}
-                  style={{ appearance:'none', cursor:'pointer', display:'flex', alignItems:'center', gap:6, padding:'8px 14px', borderRadius:200, border:`0.5px solid ${sel ? palette.ink : palette.divider}`, background: sel ? palette.ink : palette.surface, color: sel ? palette.bg : palette.ink, fontFamily:MONO, fontSize:14, fontWeight:500, transition:'all .15s', whiteSpace:'nowrap' }}>
+                  style={{ appearance:'none', cursor:'pointer', display:'flex', alignItems:'center', gap:6, padding:'8px 14px', borderRadius:200, border:`0.5px solid ${sel ? palette.ink : palette.divider}`, background: sel ? palette.ink : '#ffffff', color: sel ? palette.bg : palette.ink, fontFamily:MONO, fontSize:14, fontWeight:500, transition:'all .15s', whiteSpace:'nowrap' }}>
                   <CatIcon name={c.icon} size={13}/>{c.label}
                 </button>
               );
@@ -674,6 +689,47 @@ function GotSection({ items, palette, onRestore, onDelete }) {
 // ─── App shell ────────────────────────────────────────────────────────────────
 const STORE_KEY = 'wishlist_v3';
 
+// ─── Supabase sync ────────────────────────────────────────────────────────────
+const SB_URL = 'https://tinqvyfhvqynkuonlymg.supabase.co';
+const SB_KEY = 'sb_publishable_F4FFRW8Lal0uRyVXrAkJeA_Fv_d6YWo';
+const SB_HDR = { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}`, 'Content-Type': 'application/json' };
+
+function getOrCreateListKey() {
+  const params = new URLSearchParams(window.location.search);
+  const fromUrl = params.get('list');
+  if (fromUrl) {
+    localStorage.setItem('wishlist_key', fromUrl);
+    return fromUrl;
+  }
+  let key = localStorage.getItem('wishlist_key');
+  if (!key) {
+    key = 'wl_' + Math.random().toString(36).slice(2, 9) + Math.random().toString(36).slice(2, 9);
+    localStorage.setItem('wishlist_key', key);
+  }
+  const url = new URL(window.location);
+  url.searchParams.set('list', key);
+  window.history.replaceState({}, '', url);
+  return key;
+}
+
+async function sbLoad(key) {
+  try {
+    const res = await fetch(`${SB_URL}/rest/v1/wishlists?id=eq.${key}&select=items`, { headers: SB_HDR });
+    const data = await res.json();
+    return Array.isArray(data) && data[0]?.items ? data[0].items : null;
+  } catch { return null; }
+}
+
+async function sbSave(key, items) {
+  try {
+    await fetch(`${SB_URL}/rest/v1/wishlists`, {
+      method: 'POST',
+      headers: { ...SB_HDR, 'Prefer': 'resolution=merge-duplicates' },
+      body: JSON.stringify({ id: key, items, updated_at: new Date().toISOString() })
+    });
+  } catch {}
+}
+
 function useWindowWidth() {
   const [w, setW] = useState(() => window.innerWidth);
   useEffect(() => {
@@ -694,6 +750,12 @@ function App() {
   const [adding,     setAdding]     = useState(false);
   const [pendingUrl, setPendingUrl] = useState('');
   const [openItem,   setOpenItem]   = useState(null);
+  const [syncStatus, setSyncStatus] = useState('idle'); // 'idle' | 'saving' | 'saved' | 'error'
+  const [copied,     setCopied]     = useState(false);
+
+  const listKey    = React.useRef(getOrCreateListKey()).current;
+  const saveTimer  = React.useRef(null);
+  const didLoad    = React.useRef(false);
 
   const vw      = useWindowWidth();
   const isDesk  = vw >= 768;
@@ -701,7 +763,34 @@ function App() {
   const palette = PALETTES.light;
   const density = 'cozy';
 
-  useEffect(() => { try { localStorage.setItem(STORE_KEY, JSON.stringify(items)); } catch {} }, [items]);
+  // Load from Supabase on first mount — overrides localStorage if remote has data
+  useEffect(() => {
+    sbLoad(listKey).then(remote => {
+      if (remote) setItems(remote);
+      didLoad.current = true;
+    });
+  }, []);
+
+  // Save to localStorage immediately; debounce Supabase save by 1.2s
+  useEffect(() => {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(items)); } catch {}
+    if (!didLoad.current) return;
+    setSyncStatus('saving');
+    clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(() => {
+      sbSave(listKey, items)
+        .then(() => { setSyncStatus('saved'); setTimeout(() => setSyncStatus('idle'), 2000); })
+        .catch(() => setSyncStatus('error'));
+    }, 1200);
+  }, [items]);
+
+  const copyLink = () => {
+    const url = `${window.location.origin}${window.location.pathname}?list=${listKey}`;
+    navigator.clipboard.writeText(url).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
 
   const handleAdd = () => {
     const url = pasteValue.trim();
@@ -734,7 +823,10 @@ function App() {
   const restoreItem = (id) => setItems(prev => prev.map(i => i.id === id ? { ...i, bought: false } : i));
   const deleteItem  = (id) => { setItems(prev => prev.filter(i => i.id !== id)); setOpenItem(null); };
 
-  const catItems = category ? items.filter(i => i.category === category) : items;
+  const usedCats = CATEGORIES.filter(c => items.some(i => i.category === c.id && !i.bought));
+  const activeCategory = (category && usedCats.some(c => c.id === category)) ? category : null;
+
+  const catItems = activeCategory ? items.filter(i => i.category === activeCategory) : items;
   const active   = catItems.filter(i => !i.bought);
   const bought   = items.filter(i =>  i.bought);
   const total    = active.reduce((s, i) => s + i.price, 0);
@@ -747,28 +839,41 @@ function App() {
 
           {/* Header */}
           <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:20 }}>
-            <BoardHeader palette={palette}/>
+            <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:8 }}>
+              <BoardHeader palette={palette}/>
+              {/* Sync + copy link row — right below title */}
+              <div style={{ display:'flex', alignItems:'center', gap:10 }}>
+                <button onClick={copyLink} style={{ appearance:'none', border:`0.5px solid ${palette.divider}`, borderRadius:999, background:'#ffffff', color: copied ? palette.accent : palette.muted, fontFamily:MONO, fontSize:12, padding:'5px 14px', cursor:'pointer', display:'flex', alignItems:'center', gap:6, transition:'color .2s' }}>
+                  {copied ? '✓ link copied' : '⤴ copy my link'}
+                </button>
+                {syncStatus === 'saving' && <span style={{ fontFamily:MONO, fontSize:11, color:palette.muted }}>saving…</span>}
+                {syncStatus === 'saved'  && <span style={{ fontFamily:MONO, fontSize:11, color:palette.accent }}>✓ synced</span>}
+                {syncStatus === 'error'  && <span style={{ fontFamily:MONO, fontSize:11, color:'#e05' }}>sync failed</span>}
+              </div>
+            </div>
             <div style={{ marginTop:28 }}><HeroTotal total={total} palette={palette} density={density}/></div>
             <div style={{ width:'100%', maxWidth:560, marginTop:28 }}>
               <PasteBar palette={palette} density={density} value={pasteValue} setValue={setPasteValue} onSubmit={handleAdd}/>
             </div>
-            <div style={{ display:'flex', flexWrap:'wrap', justifyContent:'center', gap:8 }}>
-              {CATEGORIES.map(c => {
-                const on = c.id === category;
-                return (
-                  <button key={c.id} onClick={() => setCategory(prev => prev === c.id ? null : c.id)}
-                    style={{ appearance:'none', flexShrink:0, display:'flex', alignItems:'center', gap:4, padding:'7px 13px', borderRadius:999, cursor:'pointer', border:`1px solid ${on ? palette.ink : palette.divider}`, background: on ? palette.ink : '#ffffff', color: on ? palette.bg : palette.ink, fontFamily:MONO, fontSize:12, fontWeight:500, whiteSpace:'nowrap', transition:'all .15s' }}>
-                    <CatIcon name={c.icon} size={12}/>
-                    {c.label}
-                  </button>
-                );
-              })}
-            </div>
+            {usedCats.length >= 2 && (
+              <div style={{ display:'flex', flexWrap:'wrap', justifyContent:'center', gap:8 }}>
+                {usedCats.map(c => {
+                  const on = c.id === activeCategory;
+                  return (
+                    <button key={c.id} onClick={() => setCategory(prev => prev === c.id ? null : c.id)}
+                      style={{ appearance:'none', flexShrink:0, display:'flex', alignItems:'center', gap:4, padding:'7px 13px', borderRadius:999, cursor:'pointer', border:`1px solid ${on ? palette.ink : palette.divider}`, background: on ? palette.ink : '#ffffff', color: on ? palette.bg : palette.ink, fontFamily:MONO, fontSize:12, fontWeight:500, whiteSpace:'nowrap', transition:'all .15s' }}>
+                      <CatIcon name={c.icon} size={12}/>
+                      {c.label}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           {/* Grid */}
           {active.length === 0
-            ? <EmptyState palette={palette} category={category || 'all'} isDesk={isDesk}/>
+            ? <EmptyState palette={palette} category={activeCategory || 'all'} isDesk={isDesk}/>
             : <div style={{ display:'flex', flexDirection:'column', gap:16 }}>
                 <div style={{ fontFamily:MONO, fontSize:12, color:palette.muted }}>
                   {active.length} {active.length === 1 ? 'thing you don\'t need but you do' : 'things you don\'t need but you do'}
@@ -804,26 +909,39 @@ function App() {
     <div style={{ position:'relative', width:'100%', maxWidth:430, minHeight:'100vh', background:'transparent', color:palette.ink, fontFamily:MONO }}>
       <div style={{ height:'100%', overflowY:'auto', display:'flex', flexDirection:'column', gap:32, paddingBottom:52 }}>
         <div style={{ height:20 }}/>
-        <BoardHeader palette={palette}/>
+        <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:8 }}>
+          <BoardHeader palette={palette}/>
+          {/* Sync + copy link row */}
+          <div style={{ display:'flex', alignItems:'center', gap:10 }}>
+            <button onClick={copyLink} style={{ appearance:'none', border:`0.5px solid ${palette.divider}`, borderRadius:999, background:'#ffffff', color: copied ? palette.accent : palette.muted, fontFamily:MONO, fontSize:12, padding:'5px 14px', cursor:'pointer', display:'flex', alignItems:'center', gap:6, transition:'color .2s' }}>
+              {copied ? '✓ link copied' : '⤴ copy my link'}
+            </button>
+            {syncStatus === 'saving' && <span style={{ fontFamily:MONO, fontSize:11, color:palette.muted }}>saving…</span>}
+            {syncStatus === 'saved'  && <span style={{ fontFamily:MONO, fontSize:11, color:palette.accent }}>✓ synced</span>}
+            {syncStatus === 'error'  && <span style={{ fontFamily:MONO, fontSize:11, color:'#e05' }}>sync failed</span>}
+          </div>
+        </div>
         <HeroTotal total={total} palette={palette} density={density}/>
         <div style={{ display:'flex', flexDirection:'column', gap:16 }}>
           <PasteBar palette={palette} density={density} value={pasteValue} setValue={setPasteValue} onSubmit={handleAdd}/>
-          <div className="chips-row" style={{ display:'flex', gap:8, padding:'0 16px', overflowX:'auto' }}>
-            {CATEGORIES.map(c => {
-              const on = c.id === category;
-              return (
-                <button key={c.id} onClick={() => setCategory(prev => prev === c.id ? null : c.id)}
-                  style={{ appearance:'none', flexShrink:0, display:'flex', alignItems:'center', gap:4, padding:'7px 13px', borderRadius:999, cursor:'pointer', border:`1px solid ${on ? palette.ink : palette.divider}`, background: on ? palette.ink : '#ffffff', color: on ? palette.bg : palette.ink, fontFamily:MONO, fontSize:12, fontWeight:500, whiteSpace:'nowrap', transition:'all .15s' }}>
-                  <CatIcon name={c.icon} size={12}/>
-                  {c.label}
-                </button>
-              );
-            })}
-          </div>
+          {usedCats.length >= 2 && (
+            <div className="chips-row" style={{ display:'flex', gap:8, padding:'0 16px', overflowX:'auto' }}>
+              {usedCats.map(c => {
+                const on = c.id === activeCategory;
+                return (
+                  <button key={c.id} onClick={() => setCategory(prev => prev === c.id ? null : c.id)}
+                    style={{ appearance:'none', flexShrink:0, display:'flex', alignItems:'center', gap:4, padding:'7px 13px', borderRadius:999, cursor:'pointer', border:`1px solid ${on ? palette.ink : palette.divider}`, background: on ? palette.ink : '#ffffff', color: on ? palette.bg : palette.ink, fontFamily:MONO, fontSize:12, fontWeight:500, whiteSpace:'nowrap', transition:'all .15s' }}>
+                    <CatIcon name={c.icon} size={12}/>
+                    {c.label}
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         {active.length === 0
-          ? <EmptyState palette={palette} category={category || 'all'}/>
+          ? <EmptyState palette={palette} category={activeCategory || 'all'}/>
           : <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
               <div style={{ fontFamily:MONO, fontSize:12, color:palette.muted, padding:'0 16px' }}>
                 {active.length} {active.length === 1 ? 'thing you don\'t need but you do' : 'things you don\'t need but you do'}
